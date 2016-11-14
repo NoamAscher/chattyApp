@@ -1,0 +1,6 @@
+App (messages & currentUser)
+  MessageList (messages)
+    Message
+    Message
+    Message
+  ChatBar (currentUser)
