@@ -22,7 +22,7 @@ class App extends Component {
     }
 
     this.onPostMessage = this.onPostMessage.bind(this);
-    this.onPostUsername = this.onPostUsername.bind(this);
+    //this.onPostUsername = this.onPostUsername.bind(this);
   }
 
   componentDidMount() {
@@ -33,7 +33,18 @@ class App extends Component {
       this.socket.onmessage = (event) => {
       //var msg = JSON.parse(event.data);
       console.log(event.data);
-      const messages = this.state.messages.concat(JSON.parse(event.data));
+      var messages = this.state.messages;
+      //console.log(this.state.currentUser, this.state.currentUser, this.state.currentUser);
+      var newU = JSON.parse(event.data).username;
+      //console.log(newU, newU, newU);
+      if (newU !== this.state.currentUser) {
+        const announce = `*** ${this.state.currentUser} changed their name to ${newU} ***`;
+        var fullAnnounce = JSON.parse(event.data);
+        fullAnnounce.username = "";
+        fullAnnounce.content = announce;
+        messages = messages.concat(fullAnnounce);
+      }
+      messages = messages.concat(JSON.parse(event.data));
       //console.log(messages)
       this.setState({messages: messages})
     };
@@ -53,11 +64,11 @@ class App extends Component {
   // }, 300);
   }
 
-  onPostUsername(username) {
-    console.log(username);
-    this.setState({currentUser: username});
-    console.log(this.state.currentUser);
-  }
+  // onPostUsername(username) {
+  //   console.log(username);
+  //   this.setState({currentUser: username});
+  //   console.log(this.state.currentUser);
+  // }
 
   onPostMessage(username, message) {
     console.log(message);

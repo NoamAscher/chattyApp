@@ -5,7 +5,7 @@ class ChatBar extends Component {
     super(props);
     this.state = {username: this.props.currentUser, message: ''};
     this.handleChange = this.handleChange.bind(this);
-    this.handleUserChange = this.handleUserChange.bind(this);
+    this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -13,7 +13,7 @@ class ChatBar extends Component {
     this.setState({message: event.target.value});
   }
 
-  handleUserChange(event) {
+  handleUsernameChange(event) {
     this.setState({username: event.target.value});
   }
 
@@ -35,7 +35,7 @@ class ChatBar extends Component {
           type="text"
           placeholder="Your Name (Optional)"
           value={this.state.username}
-          onChange={this.handleUserChange}
+          onChange={this.handleUsernameChange}
           />
 
          <input
