@@ -22,15 +22,25 @@ class App extends Component {
     }
 
     this.onPostMessage = this.onPostMessage.bind(this);
+    this.onPostUsername = this.onPostUsername.bind(this);
   }
 
   componentDidMount() {
     this.socket = new WebSocket('ws://localhost:4000');
     console.log("App componentDidMount");
-    this.socket.onopen = function () {
+    this.socket.onopen = () => {
       console.log("Connected to server");
+      this.socket.onmessage = (event) => {
+      //var msg = JSON.parse(event.data);
+      console.log(event.data);
+      const messages = this.state.messages.concat(JSON.parse(event.data));
+      //console.log(messages)
+      this.setState({messages: messages})
+    };
     };
 
+
+    // very much doubt this is needed, clean up later
   // setTimeout(() => {
   //   console.log("Fake incoming message");
   //   // Add a new message to the list of messages in the data store
@@ -43,21 +53,26 @@ class App extends Component {
   // }, 300);
   }
 
-  onPostMessage(message) {
-    console.log(message);
-    var next_id = this.state.messages.length + 1;
-    const newMessage = {id: next_id, username: this.state.currentUser, content: message};
-    const messages = this.state.messages.concat(newMessage)
-    this.setState({messages: messages})
-    this.socket.send(`User ${this.state.currentUser} said ${message}`);
-
-    //= function(message) {
-     //       JSONParse(this.setState({username: this.state.currentUser, content: message }));
-    //}//.bind(this);
+  onPostUsername(username) {
+    console.log(username);
+    this.setState({currentUser: username});
+    console.log(this.state.currentUser);
   }
+
+  onPostMessage(username, message) {
+    console.log(message);
+    const newMessage = {username: username, content: message};
+    //const messages = this.state.messages.concat(newMessage)
+
+    this.socket.send(JSON.stringify(newMessage));
+  }
+
+
+
 
   render () {
       console.log("App render");
+
       //console.log(this.state.messages);
       return (
       //console.log("State", this.state.contacts);    <- not yet
