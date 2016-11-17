@@ -38,7 +38,13 @@ wss.on('connection', (ws) => {
     var parsedMsg = JSON.parse(message);
     console.log(parsedMsg);
     //message = message.substring(1);
-    parsedMsg.id = guid();// `{id: "${theGUID}", ${message}`;
+    // `{id: "${theGUID}", ${message}`;
+    if (parsedMsg.type === "postMessage") {
+      parsedMsg.type = "incomingMessage";
+      parsedMsg.id = guid();
+    } else {
+      parsedMsg.type = "incomingNotification";
+    }
     var responseMsg = JSON.stringify(parsedMsg);
     console.log((wss.clients).length);
     wss.clients.forEach(function each(client) {

@@ -35,15 +35,11 @@ class App extends Component {
       console.log(event.data);
       var messages = this.state.messages;
       //console.log(this.state.currentUser, this.state.currentUser, this.state.currentUser);
-      var newU = JSON.parse(event.data).username;
+      //var newU = JSON.parse(event.data).username;
       //console.log(newU, newU, newU);
-      if (newU !== this.state.currentUser) {
-        const announce = `*** ${this.state.currentUser} changed their name to ${newU} ***`;
-        var fullAnnounce = JSON.parse(event.data);
-        fullAnnounce.username = "";
-        fullAnnounce.content = announce;
-        messages = messages.concat(fullAnnounce);
-      }
+      // if (JSON.parse(event.data).type == "incomingNotification") {
+      //   messages = messages.concat(JSON.parse(event.data));
+      // }
       messages = messages.concat(JSON.parse(event.data));
       //console.log(messages)
       this.setState({messages: messages})
@@ -72,10 +68,18 @@ class App extends Component {
 
   onPostMessage(username, message) {
     console.log(message);
-    const newMessage = {username: username, content: message};
+    const newMessage = {type: "postMessage", username: username, content: message};
     //const messages = this.state.messages.concat(newMessage)
-
-    this.socket.send(JSON.stringify(newMessage));
+    console.log("old or new???", this.state.currentUser)
+    console.log("old or new???", username)
+    if (username !== this.state.currentUser) {
+      var notification = `*** ${this.state.currentUser} changed their name to ${username} ***`;
+      this.state.currentUser = username;
+      this.socket.send(JSON.stringify({type: "postNotification", content: notification}));
+    }
+    if (message !== '') {
+      this.socket.send(JSON.stringify(newMessage));
+    }
   }
 
 
