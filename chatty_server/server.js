@@ -32,7 +32,11 @@ function guid() {
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
   console.log('Client connected');
-
+  wss.clients.forEach(function each(client) {
+      // if (client !== ws) {
+    console.log(`{"userCount": ${(wss.clients).length}}`);
+    client.send(`{"userCount": ${(wss.clients).length}}`);
+  });
 
   ws.on('message', function incoming(message) {
     var parsedMsg = JSON.parse(message);
@@ -62,5 +66,12 @@ wss.on('connection', (ws) => {
 
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
-  ws.on('close', () => console.log('Client disconnected'));
+  ws.on('close', () => {
+    console.log('Client disconnected');
+    wss.clients.forEach(function each(client) {
+      // if (client !== ws) {
+      console.log(`{"userCount": ${(wss.clients).length}}`);
+      client.send(`{"userCount": ${(wss.clients).length}}`);
+    });
+  });
 });

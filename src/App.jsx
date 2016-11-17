@@ -18,7 +18,8 @@ class App extends Component {
           username: "Anonymous",
           content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
         }
-      ]
+      ],
+      userCount: 0
     }
 
     this.onPostMessage = this.onPostMessage.bind(this);
@@ -31,19 +32,24 @@ class App extends Component {
     this.socket.onopen = () => {
       console.log("Connected to server");
       this.socket.onmessage = (event) => {
-      //var msg = JSON.parse(event.data);
-      console.log(event.data);
-      var messages = this.state.messages;
-      //console.log(this.state.currentUser, this.state.currentUser, this.state.currentUser);
-      //var newU = JSON.parse(event.data).username;
-      //console.log(newU, newU, newU);
-      // if (JSON.parse(event.data).type == "incomingNotification") {
-      //   messages = messages.concat(JSON.parse(event.data));
-      // }
-      messages = messages.concat(JSON.parse(event.data));
-      //console.log(messages)
-      this.setState({messages: messages})
-    };
+        console.log(JSON.parse(event.data));
+        if (JSON.parse(event.data).userCount) {
+          this.setState({userCount: JSON.parse(event.data).userCount});
+          console.log("Number of Users Online: " + this.state.userCount);
+        } else {
+          console.log(event.data);
+          var messages = this.state.messages;
+          //console.log(this.state.currentUser, this.state.currentUser, this.state.currentUser);
+          //var newU = JSON.parse(event.data).username;
+          //console.log(newU, newU, newU);
+          // if (JSON.parse(event.data).type == "incomingNotification") {
+          //   messages = messages.concat(JSON.parse(event.data));
+          // }
+          messages = messages.concat(JSON.parse(event.data));
+          //console.log(messages)
+          this.setState({messages: messages});
+        }
+      };
     };
 
 
@@ -92,7 +98,7 @@ class App extends Component {
       return (
       //console.log("State", this.state.contacts);    <- not yet
         <div className="wrapper">
-          <Nav />
+          <Nav userCount = {this.state.userCount}/>
           <MessageList messages = {this.state.messages}/>
           <ChatBar currentUser = {this.state.currentUser} onPostMessage = {this.onPostMessage}    />
         </div>
