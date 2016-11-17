@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 class ChatBar extends Component {
+
   constructor(props) {
     super(props);
     this.state = {username: this.props.currentUser, message: ''};
@@ -19,7 +20,6 @@ class ChatBar extends Component {
 
 
   handleSubmit(event) {
-    //alert('Text field value is: ' + this.state.message);
     this.props.onPostMessage(this.state.username, this.state.message);
   }
 

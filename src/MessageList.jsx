@@ -3,9 +3,11 @@ import Message from './Message.jsx';
 import MessageSystem from './msg_system.jsx';
 
 class MessageList extends Component {
+
   componentDidMount() {
     console.log("MessageList componentDidMount");
   }
+
   render() {
     console.log("MessageList render");
     return (

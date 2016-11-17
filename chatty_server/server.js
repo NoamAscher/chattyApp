@@ -15,7 +15,8 @@ const server = express()
 // Create the WebSockets server
 const wss = new SocketServer({ server });
 
-// greates a GUID (UUID is a presumptuous name because the universe may be infinitely large.)
+// greates a GUID
+// (UUID seems like a presumptuous name since the universe may be infinitely large.)
 function guid() {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
@@ -32,17 +33,15 @@ function guid() {
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
   console.log('Client connected');
+
   wss.clients.forEach(function each(client) {
-      // if (client !== ws) {
-    console.log(`{"userCount": ${(wss.clients).length}}`);
     client.send(`{"userCount": ${(wss.clients).length}}`);
   });
 
   ws.on('message', function incoming(message) {
     var parsedMsg = JSON.parse(message);
-    console.log(parsedMsg);
-    //message = message.substring(1);
-    // `{id: "${theGUID}", ${message}`;
+    console.log("message from client to server: " + message);
+
     if (parsedMsg.type === "postMessage") {
       parsedMsg.type = "incomingMessage";
       parsedMsg.id = guid();
@@ -50,27 +49,18 @@ wss.on('connection', (ws) => {
       parsedMsg.type = "incomingNotification";
     }
     var responseMsg = JSON.stringify(parsedMsg);
-    console.log((wss.clients).length);
     wss.clients.forEach(function each(client) {
-    // if (client !== ws) {
         client.send(responseMsg);
-    // }
     });
-    console.log(responseMsg);
-    //console.log(JSON.parse(responseMsg));
-    // ws.send(responseMsg);
+    console.log("message from server to clients: " + responseMsg);
 
   });
-
-  //ws.send('something');
 
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => {
     console.log('Client disconnected');
     wss.clients.forEach(function each(client) {
-      // if (client !== ws) {
-      console.log(`{"userCount": ${(wss.clients).length}}`);
       client.send(`{"userCount": ${(wss.clients).length}}`);
     });
   });

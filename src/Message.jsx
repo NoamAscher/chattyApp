@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 
 class Message extends Component {
+
   componentDidMount() {
     console.log("Message componentDidMount");
   }
+
   render() {
     console.log("Message render");
     return (
@@ -15,7 +17,6 @@ class Message extends Component {
       </div>
     );
   }
-
 }
 
 export default Message;
